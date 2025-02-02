@@ -1,4 +1,4 @@
-package com.bank.AndrejsBank.model.request;
+package com.bank.AndrejsBank.model.request.bankAccount;
 
 import lombok.Data;
 

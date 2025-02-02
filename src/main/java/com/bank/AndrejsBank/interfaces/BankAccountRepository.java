@@ -2,9 +2,11 @@ package com.bank.AndrejsBank.interfaces;
 
 import com.bank.AndrejsBank.documents.BankAccount;
 import java.util.Optional;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface BankAccountRepository extends MongoRepository<BankAccount, String> {
-    Optional<BankAccount> findByName(String name);
+@Repository
+public interface BankAccountRepository extends JpaRepository<BankAccount, String> {
+//    void deleteByUsername (String username);
 }

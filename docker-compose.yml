@@ -1,0 +1,23 @@
+services:
+#  maria_db:
+#    image: mariadb:10.5.8
+#    ports:
+#      - 3306:3306
+#    environment:
+#      MYSQL_DATABASE: bankMariadb_simplycell
+#      MYSQL_USER: BankUser
+#      MYSQL_PASSWORD: BankUser
+#      MYSQL_ROOT_PASSWORD: root
+  api_service:
+    image: andrejsmatvejevs/bank:latest
+#    restart: always
+#    container_name: api_service
+    build: .
+#    depends_on:MATAND_3a9f0664ac4f MATAND_d4d6aefac043
+#      - maria_db
+    environment:
+      spring.datasource.url: jdbc:postgresql://dpg-cudnv9i3esus73c86bm0-a/bank_hwxy
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 8080:8080

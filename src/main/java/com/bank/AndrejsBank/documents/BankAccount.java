@@ -1,38 +1,78 @@
 package com.bank.AndrejsBank.documents;
 
+import com.bank.AndrejsBank.interfaces.BankAccountIdGenerator;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.experimental.Accessors;
 
-@Document
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
 @Getter
 @Setter
-public class BankAccount {
+@Accessors(chain=true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(schema = "public")
+public class BankAccount implements Serializable {
+    //save into file csv
     @Id
+    @Column
     private String id;
 
-    private double balance;
 
-    @Indexed(unique = true)
-    private String name;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "bankaccount_transactions",
+            joinColumns = @JoinColumn(name = "bankaccount_id"),
+            inverseJoinColumns = @JoinColumn(name = "transaction_id"))
+    public Set<Transaction> transactions;
 
-    public void deposit(double amount){
-        this.balance += amount;
+    public void removeTransactions(){
+        this.transactions.clear();
     }
 
-    public void withdraw(double amount){
-        this.balance -= amount;
+    //    @NotNull(message = "First balance is required")
+    @Column
+    private BigDecimal balance= new BigDecimal("0.00");
+
+    public void deposit(Transaction transaction){
+        setBalance(balance.add(transaction.getAmount()));
+        transactions.add(transaction);
     }
 
-    public void printBalance(){
-        System.out.println(balance);
+//    public void deposit(String fromId, BigDecimal amount){
+//        setBalance(balance.add(amount));
+//        addTransaction(amount, fromId);
+//    }
+
+    public void withdraw(Transaction transaction){
+        setBalance(balance.subtract(transaction.getAmount()));
+        transactions.add(transaction);
     }
 
-    public void transfer(BankAccount b){
-        b.deposit(balance);
-        this.balance=0;
+//    public void withdraw(String fromId, BigDecimal amount){
+//        setBalance(balance.subtract(amount));
+//        addTransaction(amount.negate(), fromId);
+//    }
+
+    @Override
+    public boolean equals (Object object) {
+        if (object == null || object.getClass() != getClass()) {
+            return false;
+        }
+        BankAccount bankAccount = (BankAccount) object;
+        return Objects.equals(this.id, bankAccount.getId());
     }
 
 }
