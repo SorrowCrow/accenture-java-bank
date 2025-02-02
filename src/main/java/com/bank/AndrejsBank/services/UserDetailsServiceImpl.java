@@ -51,7 +51,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user.getBankaccounts().contains(eq);
     }
 
-    public UserDetailsImpl createBankAccount(String username) {
+    public BankAccount createBankAccount(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
@@ -65,7 +65,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         user.addBankAccount(saved);
         userRepository.save(user);
-        return UserDetailsImpl.build(user);
+        UserDetailsImpl.build(user);
+        return saved;
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.bank.AndrejsBank.documents;
 
 import com.bank.AndrejsBank.interfaces.BankAccountIdGenerator;
 import com.bank.AndrejsBank.util.Generator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

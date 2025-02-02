@@ -10,5 +10,4 @@ import java.util.List;
 public class UserInfoResponse {
     private int id;
     private String username;
-    private List<String> roles;
 }

@@ -7,6 +7,7 @@ import com.bank.AndrejsBank.interfaces.UserRepository;
 import com.bank.AndrejsBank.model.ERole;
 import com.bank.AndrejsBank.model.request.user.SignInRequest;
 import com.bank.AndrejsBank.model.request.user.SignUpRequest;
+import com.bank.AndrejsBank.model.response.MessageResponse;
 import com.bank.AndrejsBank.model.response.UserInfoResponse;
 import com.bank.AndrejsBank.services.UserDetailsImpl;
 import com.bank.AndrejsBank.util.JwtUtils;
@@ -50,7 +51,7 @@ public class JWTAuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body("Error: Username is already taken!");
+            return ResponseEntity.badRequest().body( new MessageResponse("Error: Username is already taken!"));
         }
 
         // Create new user's account
@@ -91,7 +92,7 @@ public class JWTAuthController {
         log.info("Saving new user's account");
         userRepository.save(user);
 
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
 
@@ -113,14 +114,13 @@ public class JWTAuthController {
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .body(new UserInfoResponse(userDetails.getId(),
-                        userDetails.getUsername(),
-                        roles));
+                        userDetails.getUsername()));
     }
 
     @PostMapping("/signout")
     public ResponseEntity<?> logoutUser() {
         ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body("You've been signed out!");
+                .body( new MessageResponse("You've been signed out!"));
     }
 }
